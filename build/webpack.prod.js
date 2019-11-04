@@ -1,23 +1,31 @@
 const merge = require('webpack-merge');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const common = require('./webpack.common.js');
+const config = require('../webpack.config.js');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-module.exports = merge(common, {
+const cusConf = require('../html.config.prod')
+
+module.exports = merge(config, {
   plugins: [
     new CleanWebpackPlugin(),
     new CopyPlugin([{
-      from: __dirname + '/public/',
-      to: __dirname + '/dist/',
+      from: './public/',
+      to: './',
       ignore: ['*.html']
     }]),
     new HtmlWebpackPlugin({
-      title: 'Production',
+      title: '生产环境',
       filename: 'index.html', 
       inject: 'body',
-      static: './',
       template: 'public/index.html', //本地自定义模板
+      hash: true,
+      // minify: { // 压缩HTML文件
+      //   removeComments: false, // 移除HTML中的注释
+      //   collapseWhitespace: false, // 删除空白符与换行符
+      //   minifyCSS: false// 压缩内联css
+      // },
+      ...cusConf
     }),
     new UglifyJSPlugin({
       uglifyOptions: {         
